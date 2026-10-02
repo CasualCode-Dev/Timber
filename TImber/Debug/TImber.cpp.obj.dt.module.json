@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "TImber\\Debug\\TImber.obj",
+            "outputs": [
+                "TImber\\Debug\\TImber.cpp.obj.dt.module.json",
+                "TImber\\Debug\\TImber.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

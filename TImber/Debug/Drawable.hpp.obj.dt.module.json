@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "TImber\\Debug\\Drawable.obj",
+            "outputs": [
+                "TImber\\Debug\\Drawable.hpp.obj.dt.module.json",
+                "TImber\\Debug\\Drawable.hpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

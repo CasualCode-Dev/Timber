@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "TImber\\Debug\\Graphics.obj",
+            "outputs": [
+                "TImber\\Debug\\Graphics.hpp.obj.dt.module.json",
+                "TImber\\Debug\\Graphics.hpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}
