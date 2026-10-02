@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include<sstream>
+#include<SFML/Audio.hpp>
+#include<iostream>
 
 using namespace sf;
 
@@ -173,6 +175,23 @@ int main()
     float logSpeedX = 1000;
     float logSpeedY = -1500;
 
+    bool acceptInput = false;
+
+    SoundBuffer chopBuffer;
+    chopBuffer.loadFromFile("sound/chop.wav");
+    Sound chop;
+    chop.setBuffer(chopBuffer);
+
+    SoundBuffer deathBuffer;
+    deathBuffer.loadFromFile("sound/death.wav");
+    Sound death;
+    death.setBuffer(deathBuffer);
+
+    SoundBuffer ootBuffer;
+    ootBuffer.loadFromFile("sound/out_of_time.wav");
+    Sound outOfTime;
+    outOfTime.setBuffer(ootBuffer);
+
     while(window.isOpen())
     {
         if (Keyboard::isKeyPressed(Keyboard::Escape))
@@ -186,7 +205,85 @@ int main()
 
             score = 0;
             timeRemaining = 6;
+
+            for (int i = 0;i < NUM_BRANCHES;i++)
+            {
+                branchPositions[i] = side::NONE;
+            }
+
+            spriteRIP.setPosition(675, 2000);
+
+            spritePlayer.setPosition(580, 720);
+
+            acceptInput = true;
         }
+
+        if (acceptInput)
+        {
+            if (Keyboard::isKeyPressed(Keyboard::Right))
+            {
+                playerSide = side::RIGHT;
+
+                score++;
+
+                timeRemaining += (2 / score) + .15;
+
+                spriteAxe.setPosition(AXE_POSITION_RIGHT,
+                    spriteAxe.getPosition().y);
+
+                spritePlayer.setPosition(1200, 720);
+
+                updateBranches(score);
+
+                spriteLog.setPosition(810, 720);
+                logSpeedX = -5000;
+                logActive = true;
+
+                acceptInput = false;
+
+                chop.play();
+            }
+
+            if (Keyboard::isKeyPressed(Keyboard::Left))
+            {
+                playerSide = side::LEFT;
+
+                score++;
+
+                timeRemaining += (2 / score) + .15;
+
+                spriteAxe.setPosition(AXE_POSITION_LEFT,
+                    spriteAxe.getPosition().y);
+
+                spritePlayer.setPosition(580, 720);
+
+                updateBranches(score);
+
+                spriteLog.setPosition(810, 720);
+
+                logSpeedX = 5000;
+                logActive = true;
+
+                acceptInput = false;
+
+                chop.play();
+            }
+        }
+
+        Event event;
+
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::KeyReleased && !paused)
+            {
+                acceptInput = true;
+
+                spriteAxe.setPosition(2000,
+                    spriteAxe.getPosition().y);
+            }
+        }
+
+        
 
         if (!paused) {
 
@@ -206,6 +303,8 @@ int main()
                     textRect.top + textRect.height / 2.0f); 
 
                 messageText.setPosition(1920 / 2.0f, 1080 / 2.0f);
+
+                outOfTime.play();
             }
 
             if (!beeActive)
@@ -321,6 +420,45 @@ int main()
                 {
                     branches[i].setPosition(3000, height);
                 }
+            }
+
+            if (logActive)
+            {
+                spriteLog.setPosition(
+                    spriteLog.getPosition().x +
+                    (logSpeedX * dt.asSeconds()),
+
+                    spriteLog.getPosition().y +
+                    (logSpeedY * dt.asSeconds()));
+
+                if (spriteLog.getPosition().x < -100 ||
+                    spriteLog.getPosition().x > 2000)
+                {
+                    logActive = false;
+                    spriteLog.setPosition(810, 720);
+                }
+            }
+
+            if (branchPositions[5] == playerSide)
+            {
+                paused = true;
+                acceptInput = false;
+
+                spriteRIP.setPosition(525, 760);
+
+                spritePlayer.setPosition(2000, 660);
+
+                messageText.setString("SQUISHED!!");
+
+                FloatRect textRect = messageText.getLocalBounds();
+
+                messageText.setOrigin(textRect.left + textRect.width / 2.0f,
+                    textRect.top + textRect.height / 2.0f);
+
+                messageText.setPosition(1920 / 2.0f,
+                    1080 / 2.0f);
+
+                death.play();
             }
 
         }
